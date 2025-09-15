@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catalogo de Productos</title>
+    <link rel="stylesheet" href="catalogo.css" type="text/css">
+    <script type="text/javascript" src="tienda.js"> </script>
+</head>
+<body class="grid-container" onload="cargarProductos()">
+    <header class="item1">
+        Catalogo de Productos
+    </header>
+    <nav class="item2">
+        <a href="productos.html">Catalogo de Productos</a>
+        <a href="carrito.html">Carrito de Compras</a>
+    </nav>
+    <aside class="item3">
+        <form name="filter">
+            <fieldset>
+                <legend>Busqueda</legend>
+                <label for="search">Buscar:</label>
+                <input type="text" id="search" name="search">
+            </fieldset>
+            <fieldset>
+                <p>
+                <legend>Precios</legend>
+                <label for="minimo">Minimo:</label>
+                <input type="number" id="minimo" name="precio-min" min="0">
+                </p>
+                <p>
+                 <label for="maximo">Maximo:</label>
+                 <input type="number" id="maximo" name="precio-max">   
+                </p>
+            </fieldset>
+            <fieldset>
+                <legend>Tipo de Producto</legend>
+                <p>
+                <label for="protectores">Protectores</label>
+                <input type="checkbox" name="tipo" id="protectores" value="protectores">
+                </p>
+                <p>
+                <label for="entrenamiento">Entrenamiento</label>
+                <input type="checkbox" id="entrenamiento" name="tipo" value="entrenamiento">
+                </p>
+                <p>
+                <label for="dobok">Dobok</label>
+                <input type="checkbox" id="dobok" name="tipo" value="dobok">
+                </p>
+            </fieldset>
+        </form>
+    </aside>
+    <dialog id="modal">
+        <h2>Detalle del Producto</h2>
+        <h3 id="titulo-producto">Cabezal cerrado</h3>
+        <p id="desc-producto">Este producto viene del talle 1 al 3.</p>
+        <button type="button" onclick="cerrarModal()">Ocultar detalle</button>
+    </dialog>
+    <main class="item4" id="mostrar-catalogo"></main>
+    <footer class="item5">
+        contacto
+    </footer>
+</body>
+</html>
