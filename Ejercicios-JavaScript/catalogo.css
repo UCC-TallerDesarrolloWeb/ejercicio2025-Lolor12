@@ -63,3 +63,12 @@ a:hover{
     background-color: var(--color-secundario);
     padding: 7px;
 }
+
+
+#cant-prod{
+    background-color: var(--color-primario);
+    color: var(--color-texto);
+    display: inline;
+    border-radius: 50%;
+    padding: 7px;
+}

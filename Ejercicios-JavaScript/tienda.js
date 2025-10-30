@@ -62,15 +62,15 @@ const productos = [
   },
 ];
 
-let cargarProductos = () =>{
+let cargarProductos = (prod = productos) =>{
   let contenido = "";
 
-  productos.forEach((elemento, id) => {
+  prod.forEach((elemento, id) => {
     contenido +=`  
     <div>
       <img src="images/${elemento.imagen}" alt="${elemento.nombre}"/>
       <h3>${elemento.nombre}</h3>
-      <p>${elemento.precio}</p>
+      <p>${formatPrice(elemento.precio)}</p>
       <button type="button" onclick="mostrarModal(${id})">Ver Detalle</button>
       <button type="button" onclick="agregarCarrito(${id})">Agregar al Carrito</button>
     </div>`
@@ -88,6 +88,7 @@ let agregarCarrito = (id) => {
   carritolist.push(id);
   console.log(carritolist);
   localStorage.setItem("carrito", JSON.stringify(carritolist));
+  contarProductos();
 };
 
 let cargarCarrito = () => {
@@ -102,7 +103,7 @@ let cargarCarrito = () => {
     carritolist.forEach((num, id) => {
       contenido += `<div>
         <h3>${productos[num].nombre}</h3>
-        <p>${productos[num].precio}</p>
+        <p>${formatPrice(productos[num].precio)}</p>
         <button type="button" onClick="eliminarProducto(id)">Eliminar Producto</button>
       </div>`;
     });
@@ -114,6 +115,7 @@ let cargarCarrito = () => {
 let vaciarCarrito = () => {
   localStorage.removeItem("carrito");
   window.location.reload();
+  contarProductos();
 }
 
 let eliminarProducto = (id) => {
@@ -126,8 +128,10 @@ let eliminarProducto = (id) => {
   }else{
     localStorage.removeItem("carrito");  
   }
+  contarProductos();
   window.location.reload();
-}
+};
+
 let mostrarModal = (id) => {
   document.getElementById("titulo-producto").innerText = productos[id].nombre;
   document.getElementById("desc-producto").innerText = productos[id].description;
@@ -138,3 +142,96 @@ let mostrarModal = (id) => {
 let cerrarModal = () => {
   document.getElementById("modal").style.display = "none";
 };
+
+let filtrarproductos = () => {
+  let searchWord = document.getElementById("search").value;
+  let min = document.getElementById("minimo").value;
+  let max = document.getElementById("maximo").value;
+  let marca = document.getElementById("marca").value;
+  let prot = document.getElementById("protectores").checked;
+  let entr = document.getElementById("entrenamiento").checked;
+  let dob = document.getElementById("dobok").checked;
+
+  let newLista = productos;
+
+  if(searchWord){
+    newLista = newLista.filter((prod) => 
+      prod.nombre.toLocaleLowerCase().includes(searchWord.toLocaleLowerCase()) ||
+      prod.description.toLocaleLowerCase().includes(searchWord.toLocaleLowerCase())
+    );
+  }
+
+  if(min){
+    newLista = newLista.filter((prod) => prod.precio >=min);
+  }
+
+  if(max){
+    newLista = newLista.filter((prod) => prod.precio <=max);
+  }
+
+  if(marca !=="Todas"){
+    newLista = newLista.filter((prod) => prod.marca === marca);
+  }
+
+  let category = [];
+  prot ? category.push("Protectores") : "";
+  entr ? category.push("Entrenamiento") : "";
+  dob ? category.push("Dobok") : "";
+
+  if(category.length >0){
+    newLista = newLista.filter((prod) => category.includes(prod.categoria));
+  }
+
+  cargarProductos(newLista);
+};
+
+let formatPrice = (price) => {
+  return new Intl.NumberFormat("es-AR", {
+    currency: "ARS",
+    style: "currency"
+  }).format(price);
+};
+
+let contarProductos = () => {
+  const getCart = JSON.parse(localStorage.getItem("carrito"));
+
+  if (getCart != null) {
+    document.getElementById("cant-prod").innerText = getCart.length;
+  }
+};
+
+let orderCatalog = () => {
+  const opt = document.getElementById("order").value;
+  let newProductos;
+
+  switch (opt) {
+    case "menor":
+      newProductos = productos.sort((a,b) => a.precio - b.precio);
+      break;
+    case "mayor":
+      newProductos = productos.sort((a,b) => b.precio - a.precio);
+      break;
+    case "a-z":
+      newProductos = productos.sort((a,b) => {
+        if (a.nombre.toUpperCase() < b.nombre.toUpperCase()){
+          return -1;
+        }else{
+          return 1;
+        }
+      });
+      break;
+
+    case "a-z":
+      newProductos = productos.sort((a,b) => {
+        if (a.nombre.toUpperCase() > b.nombre.toUpperCase()){
+          return -1;
+        }else{
+          return 1;
+        }
+      });
+      break
+    default:  
+      newProductos = productos.sort((a,b) => a.precio - b.precio);
+  }
+  cargarProductos(newProductos); 
+}
